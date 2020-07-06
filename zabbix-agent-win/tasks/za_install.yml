@@ -1,0 +1,14 @@
+---                                                                                                                                                                                                           
+- name: Download new Zabbix agent zip archive                                                                                                                                                                 
+  win_get_url:                                                                                                                                                                                                
+    url: "{{ za_download_url }}"                                                                                                                                                                              
+    dest: "{{ za_dir }}"                                                                                                                                                                                      
+  register: za_new_download                                                                                                                                                                                   
+
+- name: Unzip downloaded archive                                                                                                                                                                              
+  win_unzip:                                                                                                                                                                                                  
+    src: "{{ za_new_download.dest }}"                                                                                                                                                                         
+    dest: '{{ za_dir }}\upd_tmp\'                                                                                                                                                                             
+    delete_archive: yes                                                                                                                                                                                       
+  register: za_unzipped                                                                                                                                                                                       
+  when: za_new_download.status_code == 200            

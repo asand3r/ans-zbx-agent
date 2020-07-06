@@ -1,0 +1,33 @@
+---
+- name: Check is Zabbix Agent service installed
+  win_service:
+    name: '{{ za_svc_name }}'
+  register: za_svc_info
+
+- name: Check is Zabbix binary exists
+  win_stat:
+    path: '{{ za_exe }}'
+  register: za_exe_stat
+
+- name: Check installed Zabbix Agent version
+  win_file_version:
+    path: '{{ za_exe }}'
+  when: za_exe_stat.stat.exists
+  register: za_ver
+
+- name: Check Zabbix Server version to syncronize
+  win_uri:
+    url: "{{ zs_api_url }}"
+    method: POST
+    content_type: application/json
+    return_content: yes
+    body: '{"jsonrpc": "2.0", "method": "apiinfo.version", "id": 1, "params": {}}'
+  register: zs_version
+
+- name: Running update of Zabbix Agent
+  include_tasks: za_update.yml
+  when: za_svc_info.exists and za_ver.win_file_version.product_version != zs_version.json.result
+
+- name: Install Zabbix Agent
+  include_tasks: za_install.yml
+  when: za_svc_info.exists == False

@@ -1,0 +1,32 @@
+---
+- name: Download new Zabbix agent zip archive
+  win_get_url:
+    url: "{{ za_download_url }}"
+    dest: "{{ za_dir }}"
+  register: za_new_download
+
+- name: Unzip downloaded archive
+  win_unzip:
+    src: "{{ za_new_download.dest }}"
+    dest: '{{ za_dir }}\upd_tmp\'
+    delete_archive: yes
+  register: za_unzipped
+  when: za_new_download.status_code == 200
+
+- name: Stop Zabbix Agent service
+  win_service:
+    name: '{{ za_svc_name }}'
+    state: stopped
+  notify: restart zabbix agent
+
+- name: Replace Zabbix Agent binary with new version
+  win_copy:
+    src: '{{ za_dir }}\upd_tmp\bin\zabbix_agentd.exe'
+    dest: '{{ za_exe }}'
+    remote_src: yes
+
+- name: Remove temporary files
+  win_file:
+    path: '{{ za_dir }}\upd_tmp'
+    state: absent
+

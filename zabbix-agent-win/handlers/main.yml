@@ -1,0 +1,4 @@
+- name: restart zabbix agent
+  win_service:
+    name: '{{ za_svc_name }}'
+    state: restarted
