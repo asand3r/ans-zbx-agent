@@ -1,12 +1,11 @@
 ############ GENERAL PARAMETERS #################
-
 HostnameItem=system.hostname
 Server={{ za_server }}
-
 ServerActive={{ za_server }}
-
 ListenPort=10050
+StartAgents={{ za_start_agents }}
 LogFile={{ za_dir }}\zabbix_agentd.log
-DebugLevel={{ za_debuglevel }}
+DebugLevel={{ za_debug_level }}
 Timeout={{ za_timeout }}
-Include={{ za_dir_userparameters }}\*.conf
+Include={{ za_dir_conf_d }}\*.conf
+EnableRemoteCommands=1

@@ -7,6 +7,7 @@
 - name: Check is Zabbix binary exists
   win_stat:
     path: '{{ za_exe }}'
+  when: za_svc_info.exists
   register: za_exe_stat
 
 - name: Check installed Zabbix Agent version
@@ -24,10 +25,17 @@
     body: '{"jsonrpc": "2.0", "method": "apiinfo.version", "id": 1, "params": {}}'
   register: zs_version
 
+- name: Install Zabbix Agent
+  include_tasks: za_install.yml
+  when: za_svc_info.exists == False
+
 - name: Running update of Zabbix Agent
   include_tasks: za_update.yml
   when: za_svc_info.exists and za_ver.win_file_version.product_version != zs_version.json.result
 
-- name: Install Zabbix Agent
-  include_tasks: za_install.yml
-  when: za_svc_info.exists == False
+- name: Check Zabbix Agent config file
+  win_template:
+    src: zabbix_agentd.conf.j2
+    dest: '{{ za_conf }}'
+  when:
+    za_svc_info.exists

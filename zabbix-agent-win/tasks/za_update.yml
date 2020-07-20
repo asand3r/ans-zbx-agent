@@ -25,6 +25,11 @@
     dest: '{{ za_exe }}'
     remote_src: yes
 
+- name: Check Zabbix Agent config file
+  win_template:
+    src: zabbix_agentd.conf.j2
+    dest: '{{ za_conf }}'
+
 - name: Remove temporary files
   win_file:
     path: '{{ za_dir }}\upd_tmp'

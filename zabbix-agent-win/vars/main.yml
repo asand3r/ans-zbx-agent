@@ -1,6 +1,15 @@
 ---
 zs_api_url: 'http://172.16.1.2:81/api_jsonrpc.php'
 za_dir: 'C:\Program Files\Zabbix Agent'
+za_dir_conf_d: '{{ za_dir }}\zabbix_agentd.d'
+za_dir_scripts: '{{ za_dir }}\scripts'
 za_exe: '{{ za_dir }}\zabbix_agentd.exe'
 za_svc_name: 'Zabbix Agent'
+za_conf: '{{ za_dir }}\zabbix_agentd.conf'
 za_download_url: 'https://www.zabbix.com/downloads/{{ zs_version.json.result }}/zabbix_agent-{{ zs_version.json.result }}-windows-amd64.zip'
+
+# Zabbix Agent config
+za_server: 172.16.1.2
+za_debug_level: 3
+za_timeout: 10
+za_start_agents: 3
